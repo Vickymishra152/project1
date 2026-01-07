@@ -1,0 +1,160 @@
+beginner-friendly CI project that demonstrates GitHub → Jenkins (Poll SCM) → CI build.
+
+repo:
+hello-ci/
+│
+├── app.py
+├── test_app.py
+├── requirements.txt
+└── Jenkinsfile   (optional but recommended)
+#Jenkinsfile
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Install Dependencies') {
+            steps {
+               sh '''
+               python3 -m venv venv
+               . venv/bin/activate
+               pip install --upgrade pip
+               pip install -r requirements.txt
+               '''
+
+
+
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'venv/bin/python3 -m pytest --maxfail=1 --disable-warnings -q'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Build Finished'
+        }
+    }
+}
+
+
+#Jenkins UI step-by-step guide to integrate GitHub with Jenkins.
+
+#Jenkins → Manage Jenkins → Plugins → Available
+
+#Install these plugins:
+
+✅ Git
+
+✅ GitHub
+
+✅ GitHub Branch Source (recommended)
+
+#Create GitHub Personal Access Token
+Steps on GitHub:
+
+GitHub → Settings
+
+Developer settings
+
+Personal access tokens
+
+Tokens (classic)
+
+Generate new token > Copy the token
+
+#Add GitHub Credentials in Jenkins
+Jenkins:
+
+Manage Jenkins → Credentials
+
+System → Global credentials → Add Credentials > Save
+
+1. New Item
+
+Name: hello-ci
+
+Type: Pipeline (or Freestyle if you prefer)
+
+2. Source Code Management
+
+Git
+
+Repo URL: https://github.com/yourusername/hello-ci.git
+
+3. Build Triggers
+✅ Check Poll SCM : H/1 * * * *   # to check Periodically in 1 minute
+4. Pipeline
+
+Definition: Pipeline script from SCM
+
+Script Path: Jenkinsfile
+
+5. Save
+
+#Push Code to GitHub
+
+Step 1: Create a GitHub Repository on public
+Step 2: Go to Project folder and Initialize Git Locally
+
+$git init
+$git add .
+$git commit -m "Initial commit - hello ci project"
+$git remote add origin https://github.com/<your-username>/hello-ci.git
+
+Step 6: Push Code
+
+$git branch -M main
+$git push -u origin main
+
+Question:
+
+"How do you integrate GitHub with Jenkins for CI, and how does Jenkins detect changes in the repository?"
+
+Answer (Step-by-Step):
+
+Integrating GitHub with Jenkins:
+
+Install the Git and GitHub plugins in Jenkins.
+
+Create a GitHub Personal Access Token and add it as a credential in Jenkins.
+
+In Jenkins job configuration, set Source Code Management → Git, provide the repo URL, and select the credentials.
+
+Optionally, use a Jenkinsfile in the repo to define the pipeline.
+
+Detecting Changes:
+
+Poll SCM: Jenkins periodically checks GitHub for changes (e.g., every minute). If changes exist, it triggers the pipeline.
+
+Webhook (optional): GitHub can notify Jenkins immediately when a push occurs. This is more efficient than polling.
+
+CI Process Example:
+
+Jenkins pulls the latest code from GitHub.
+
+Installs dependencies (e.g., pip install -r requirements.txt for Python).
+
+Runs tests (e.g., pytest).
+
+Reports build status (success/failure).
+
+Why This Is Important:
+
+Ensures automated, fast feedback after each code change.
+
+Reduces manual testing and integration errors.
+
+Enables continuous integration and delivery practices.
+
+
+Interview Summery
+
+“I push code to GitHub using git add, commit, and push. When I modify app.py and push again, Jenkins detects the change via Poll SCM and triggers the CI pipeline.”
+
+
+
