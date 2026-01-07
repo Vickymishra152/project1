@@ -22,7 +22,8 @@ pipeline {
                // sh venv/bin/activate
                 //python -m unittest test_app.py
                 //'''
-	        sh 'venv/bin/python3 -m unittest test_app.py'
+	       // sh 'venv/bin/python3 -m unittest test_app.py'
+		sh 'venv/bin/python3 -m pytest --maxfail=1 --disable-warnings -q'
             }
         }
     }
