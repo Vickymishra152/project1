@@ -18,10 +18,11 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh '''
-                sh venv/bin/activate
-                python -m unittest test_app.py
-                '''
+               // sh '''
+               // sh venv/bin/activate
+                //python -m unittest test_app.py
+                //'''
+	        sh 'venv/bin/python3 -m unittest test_app.py'
             }
         }
     }
