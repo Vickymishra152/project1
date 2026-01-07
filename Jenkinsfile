@@ -19,7 +19,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                . venv/bin/activate
+                sh venv/bin/activate
                 python -m unittest test_app.py
                 '''
             }
